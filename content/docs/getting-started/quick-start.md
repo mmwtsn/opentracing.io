@@ -16,7 +16,7 @@ These can be adapted to use other OpenTracing-compatible Tracer easily by adjust
 ### Java
 
 ```java
-import com.uber.jaeger.Configuration;
+import io.jaegertracing.Configuration;
 import io.opentracing.Span;
 import io.opentracing.util.GlobalTracer;
 
@@ -47,9 +47,9 @@ try (Span parent = GlobalTracer.get()
 
 ```go
 import (
+    "github.com/jaegertracing/jaeger-client-go"
+    "github.com/jaegertracing/jaeger-client-go/config"
     "github.com/opentracing/opentracing-go"
-    "github.com/uber/jaeger-client-go"
-    "github.com/uber/jaeger-client-go/config"
 )
 
 ...
