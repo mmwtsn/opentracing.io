@@ -46,45 +46,49 @@ try (Span parent = GlobalTracer.get()
 ### Go
 
 ```go
+package main
+
 import (
-    "github.com/jaegertracing/jaeger-client-go"
-    "github.com/jaegertracing/jaeger-client-go/config"
-    "github.com/opentracing/opentracing-go"
+	"time"
+
+	"github.com/jaegertracing/jaeger-client-go"
+	"github.com/jaegertracing/jaeger-client-go/config"
+	"github.com/opentracing/opentracing-go"
 )
 
 ...
 
 func main() {
-    ...
-    cfg := config.Configuration{
-	Sampler: &config.SamplerConfig{
-	    Type:  "const",
-	    Param: 1,
-	},
-	Reporter: &config.ReporterConfig{
-	    LogSpans:            true,
-	    BufferFlushInterval: 1 * time.Second,
-	},
-    }
-    tracer, closer, err := cfg.New(
-        "your_service_name",
-        config.Logger(jaeger.StdLogger),
-    )
-    opentracing.SetGlobalTracer(tracer)
-    defer closer.Close()
+	...
+	cfg := config.Configuration{
+		Sampler: &config.SamplerConfig{
+			Type:  "const",
+			Param: 1,
+		},
+		Reporter: &config.ReporterConfig{
+			LogSpans:            true,
+			BufferFlushInterval: 1 * time.Second,
+		},
+	}
+	tracer, closer, err := cfg.New(
+		"your_service_name",
+		config.Logger(jaeger.StdLogger),
+	)
+	opentracing.SetGlobalTracer(tracer)
+	defer closer.Close()
 
-    someFunction()
-    ...
+	someFunction()
+	...
 }
 
 ...
 
 func someFunction() {
-    parent := opentracing.GlobalTracer().StartSpan("hello")
-    defer parent.Finish()
-    child := opentracing.GlobalTracer().StartSpan(
-	"world", opentracing.ChildOf(parent.Context()))
-    defer child.Finish()
+	parent := opentracing.GlobalTracer().StartSpan("hello")
+	defer parent.Finish()
+	child := opentracing.GlobalTracer().StartSpan(
+		"world", opentracing.ChildOf(parent.Context()))
+	defer child.Finish()
 }
 ```
 
